@@ -1,5 +1,6 @@
 // const fs = require('fs');
 import express from 'express';
+import bodyParser from 'body-parser';
 import 'dotenv/config'
 // const OpenAI = require('openai');
 
@@ -38,15 +39,20 @@ const MODEL = {
 console.log(process.env.OPENAI_API_KEY, process.env.OPEN_API_ENDPOINT);
 
 const messages = [
-  { role: "system", content: "You are a helpful assistant. You will talk like a pirate." },
+  { role: "system", content: "Welcome to Nationale-Nederlanden! I'm a chatbot" },
   { role: "user", content: "Can you help me?" },
   { role: "assistant", content: "Arrrr! Of course, me hearty! What can I do for ye?" },
-  { role: "user", content: "What type of insurance can you recommend me to use in NN.nl?" },
+  { role: "user", content: "What type of health insurance can you recommend me if I have salary 5000 euro per month and have some chronic deseases to use in NN.nl?" },
 ];
 
 const deploymentId = "gpt-35-turbo";
 
 const app = express();
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: false}));
+
+// parse application/json
+app.use(bodyParser.json());
 app.use(express.json());
 
 import { OpenAIClient } from "@azure/openai";
@@ -60,7 +66,7 @@ async function streamMain() {
       endpoint,
       new AzureKeyCredential(process.env.OPENAI_API_KEY));
   
-  const events = await client.streamChatCompletions(deploymentId, messages, { maxTokens: 128 });
+  const events = await client.streamChatCompletions(deploymentId, messages);
   for await (const event of events) {
     for (const choice of event.choices) {
       const delta = choice.delta?.content;
@@ -71,28 +77,40 @@ async function streamMain() {
   }
 }
 
-// streamMain().catch(err => console.error('err', err))
+streamMain().catch(err => console.error('err', err))
 
-async function main(){
-  // Replace with your Azure OpenAI key
-  const client = new OpenAIClient(endpoint, new AzureKeyCredential(key));
+console.log('------');
 
-  const examplePrompts = [
-    "How are you today?",
-    "What is Azure OpenAI?",
-    "Why do children love dinosaurs?",
-    "Generate a proof of Euler's identity",
-    "Describe in single words only the good things that come into your mind about your mother.",
-  ];
+async function handler(req, res){
+  const { prompt } = req.body; // I finish this tomorrow morning
+  try {
+    // Replace with your Azure OpenAI key
+    const client = new OpenAIClient(endpoint, new AzureKeyCredential(key));
+
+    const examplePrompts = [
+      "ik ben werkgever en ik heb 100 werknemers. Welke basis verzekering kan je me aanbieden?",
+      // "What is Azure OpenAI?",
+      // "Why do children love dinosaurs?",
+      // "Generate a proof of Euler's identity",
+      // "Describe in single words only the good things that come into your mind about your mother.",
+    ];
 
 
-  let promptIndex = 0;
-  const { choices } = await client.getCompletions(deploymentId, examplePrompts);
-  for (const choice of choices) {
-    const completion = choice.text;
-    console.log(`Input: ${examplePrompts[promptIndex++]}`);
-    console.log(`Chatbot: ${completion}`);
+    let promptIndex = 0;
+    const { choices } = await client.getCompletions(deploymentId, examplePrompts);
+    console.log(choices);
+    for (const choice of choices) {
+      const completion = choice.text;
+      console.log(`Input: ${examplePrompts[promptIndex++]}`);
+      console.log(`Chatbot: ${completion}`);
+    }
+    res.json(choices.map(choice => choice.text));
+  } catch (e) {
+    res.status(400).json({
+      message: e
+    });
   }
+  
 }
 
 main().catch(err => console.error(err))
@@ -156,15 +174,14 @@ main().catch(err => console.error(err))
 //     }
 // };
 
-const handler = () => {}
 
 app.get('/favicon.ico', (req, res) => res.status(404).send());
 
-app.get('*', handler);
-app.post('*', handler);
+app.post('/ask', handler);
+// app.post('*', handler);
 
 const port = process.env.PORT;
 
-// app.listen(port, () => {
-//     console.log(`Server is running on port ${port}`);
-// });
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
