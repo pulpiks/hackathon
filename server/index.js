@@ -54,44 +54,48 @@ import { AzureKeyCredential } from "@azure/core-auth";
 
 const endpoint = process.env.OPEN_API_ENDPOINT;
 const key = process.env.OPENAI_API_KEY;
-const client = new OpenAIClient(
-    endpoint,
-    new AzureKeyCredential(process.env.OPENAI_API_KEY));
 
-const events = await client.streamChatCompletions(deploymentId, messages, { maxTokens: 128 });
-for await (const event of events) {
-  for (const choice of event.choices) {
-    const delta = choice.delta?.content;
-    if (delta !== undefined) {
-      console.log(`Chatbot: ${delta}`);
+async function streamMain() {
+  const client = new OpenAIClient(
+      endpoint,
+      new AzureKeyCredential(process.env.OPENAI_API_KEY));
+  
+  const events = await client.streamChatCompletions(deploymentId, messages, { maxTokens: 128 });
+  for await (const event of events) {
+    for (const choice of event.choices) {
+      const delta = choice.delta?.content;
+      if (delta !== undefined) {
+        console.log(`Chatbot: ${delta}`);
+      }
     }
   }
 }
 
-// async function main(){
-//   // Replace with your Azure OpenAI key
-//   const client = new OpenAIClient(endpoint, new AzureKeyCredential(key));
+// streamMain().catch(err => console.error('err', err))
 
-//   const examplePrompts = [
-//     "How are you today?",
-//     "What is Azure OpenAI?",
-//     "Why do children love dinosaurs?",
-//     "Generate a proof of Euler's identity",
-//     "Describe in single words only the good things that come into your mind about your mother.",
-//   ];
+async function main(){
+  // Replace with your Azure OpenAI key
+  const client = new OpenAIClient(endpoint, new AzureKeyCredential(key));
 
-//   const deploymentName = "text-davinci-003";
+  const examplePrompts = [
+    "How are you today?",
+    "What is Azure OpenAI?",
+    "Why do children love dinosaurs?",
+    "Generate a proof of Euler's identity",
+    "Describe in single words only the good things that come into your mind about your mother.",
+  ];
 
-//   let promptIndex = 0;
-//   const { choices } = await client.getCompletions(deploymentId, examplePrompts);
-//   for (const choice of choices) {
-//     const completion = choice.text;
-//     // console.log(`Input: ${examplePrompts[promptIndex++]}`);
-//     // console.log(`Chatbot: ${completion}`);
-//   }
-// }
 
-// main().catch(err => console.error(err))
+  let promptIndex = 0;
+  const { choices } = await client.getCompletions(deploymentId, examplePrompts);
+  for (const choice of choices) {
+    const completion = choice.text;
+    console.log(`Input: ${examplePrompts[promptIndex++]}`);
+    console.log(`Chatbot: ${completion}`);
+  }
+}
+
+main().catch(err => console.error(err))
 
 // const credential = new AzureKeyCredential(process.env.OPENAI_API_KEY);
 
