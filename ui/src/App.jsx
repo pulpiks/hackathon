@@ -40,7 +40,8 @@ const App = () => {
 
     try {
       const response = await processMessageToChatGPT([...messages, newMessage]);
-      const content = response.data[0]?.text;
+      // const content = response[0]?.text;
+      const content = response[0]?.message?.content;
       if (content) {
         const chatGPTResponse = {
           message: content,
@@ -56,16 +57,16 @@ const App = () => {
   };
 
   async function processMessageToChatGPT(chatMessages) {
-    console.log(chatMessages);
     const apiMessages = chatMessages.map((messageObject) => {
-      const role = messageObject.sender === MESSAGE_TYPE.ASSISTANT ? MESSAGE_TYPE.ASSISTANT : MESSAGE_TYPE.USER;
+      const role = messageObject.sender;
       return { role, content: messageObject.message };
     });
 
     const response = await fetch(API_ENDPOINT, {
       method: "POST",
       body: JSON.stringify({
-        prompt: apiMessages.map(message => message.content),
+        // prompt: apiMessages.map(message => message.content),
+        prompt: apiMessages,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +87,6 @@ const App = () => {
               typingIndicator={isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null}
             >
               {messages.map((message, i) => {
-                console.log(message)
                 return <Message key={i} model={message} className={`message_${message.sender}`}/>
               })}
             </MessageList>

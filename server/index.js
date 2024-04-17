@@ -77,7 +77,7 @@ async function streamMain() {
     for (const choice of event.choices) {
       const delta = choice.delta?.content;
       if (delta !== undefined) {
-        console.log(`Chatbot: ${delta}`);
+        // console.log(`Chatbot: ${delta}`);
       }
     }
   }
@@ -92,8 +92,7 @@ async function handler(req, res){
     // Replace with your Azure OpenAI key
     const client = new OpenAIClient(endpoint, new AzureKeyCredential(key));
 
-    let promptIndex = 0;
-    const { choices } = await client.getCompletions(deploymentId, prompt);
+    const { choices } = await client.getChatCompletions(deploymentId, prompt);
     console.log(choices);
     // console.log(choices);
     // for (const choice of choices) {
@@ -101,7 +100,7 @@ async function handler(req, res){
       // console.log(`Input: ${examplePrompts[promptIndex++]}`);
       // console.log(`Chatbot: ${completion}`);
     // }
-    res.status(200).json({ data: choices});
+    res.status(200).json(choices);
   } catch (e) {
     res.status(400).json({
       message: e
