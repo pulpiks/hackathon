@@ -12,10 +12,10 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em #404040);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em #ea650d);
 }
 
 @keyframes logo-spin {
@@ -39,4 +39,12 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.message_user {
+  justify-content: flex-start!important;
+}
+
+.message_assistant,
+.message_system{
 }

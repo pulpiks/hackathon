@@ -12,12 +12,18 @@ import {
 
 const API_ENDPOINT = 'http://localhost:3000/ask'
 
+const MESSAGE_TYPE = {
+  SYSTEM: 'system', // initial message
+  ASSISTANT: 'assistant', //responses from chat-gpt
+  USER: 'user' // prompt from user
+}
+
 const App = () => {
   const [messages, setMessages] = useState([
     {
       message: "Hello, I'm ChatGPT! Ask me anything!",
       sentTime: "just now",
-      sender: "ChatGPT",
+      sender: MESSAGE_TYPE.SYSTEM,
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -26,7 +32,7 @@ const App = () => {
     const newMessage = {
       message,
       direction: 'outgoing',
-      sender: "user",
+      sender: MESSAGE_TYPE.USER,
     };
 
     setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -34,11 +40,11 @@ const App = () => {
 
     try {
       const response = await processMessageToChatGPT([...messages, newMessage]);
-      const content = response.choices[0]?.message?.content;
+      const content = response.data[0]?.text;
       if (content) {
         const chatGPTResponse = {
           message: content,
-          sender: "ChatGPT",
+          sender: MESSAGE_TYPE.ASSISTANT,
         };
         setMessages((prevMessages) => [...prevMessages, chatGPTResponse]);
       }
@@ -50,33 +56,22 @@ const App = () => {
   };
 
   async function processMessageToChatGPT(chatMessages) {
+    console.log(chatMessages);
     const apiMessages = chatMessages.map((messageObject) => {
-      const role = messageObject.sender === "ChatGPT" ? "assistant" : "user";
+      const role = messageObject.sender === MESSAGE_TYPE.ASSISTANT ? MESSAGE_TYPE.ASSISTANT : MESSAGE_TYPE.USER;
       return { role, content: messageObject.message };
     });
 
-    // const apiRequestBody = {
-    //   "model": "gpt-3.5-turbo",
-    //   "messages": [
-    //     { role: "system", content: "I'm a Student using ChatGPT for learning" },
-    //     ...apiMessages,
-    //   ],
-    // };
-
     const response = await fetch(API_ENDPOINT, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      // mode: "cors", // no-cors, *cors, same-origin
-      // mode: 'no-cors',
+      method: "POST",
       body: JSON.stringify({
         prompt: ['hallo', 'Nederland'],
       }),
       headers: {
         "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
 
-    console.log(response);
     const reseived = await response.json();
     return reseived;
   }
@@ -92,7 +87,7 @@ const App = () => {
             >
               {messages.map((message, i) => {
                 console.log(message)
-                return <Message key={i} model={message} />
+                return <Message key={i} model={message} className={`message_${message.sender}`}/>
               })}
             </MessageList>
             <MessageInput placeholder="Send a Message" onSend={handleSendRequest} />        

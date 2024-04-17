@@ -91,24 +91,16 @@ async function handler(req, res){
     // Replace with your Azure OpenAI key
     const client = new OpenAIClient(endpoint, new AzureKeyCredential(key));
 
-    const examplePrompts = [
-      "ik ben werkgever en ik heb 100 werknemers. Welke basis verzekering kan je me aanbieden?",
-      // "What is Azure OpenAI?",
-      // "Why do children love dinosaurs?",
-      // "Generate a proof of Euler's identity",
-      // "Describe in single words only the good things that come into your mind about your mother.",
-    ];
-
-
     let promptIndex = 0;
     const { choices } = await client.getCompletions(deploymentId, prompt);
+    console.log(choices);
     // console.log(choices);
     // for (const choice of choices) {
       // const completion = choice.text;
       // console.log(`Input: ${examplePrompts[promptIndex++]}`);
       // console.log(`Chatbot: ${completion}`);
     // }
-    res.status(200).json({ data: choices.map(choice => choice.text)});
+    res.status(200).json({ data: choices});
   } catch (e) {
     res.status(400).json({
       message: e

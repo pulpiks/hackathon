@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start-server": "node server/index.js",
-    "debug-server": "node --watch server/index.js"
+    "start": "node server/index.js",
+    "debug": "node --watch server/index.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
