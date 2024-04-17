@@ -71,7 +71,7 @@ async function streamMain() {
     for (const choice of event.choices) {
       const delta = choice.delta?.content;
       if (delta !== undefined) {
-        console.log(`Chatbot: ${delta}`);
+        // console.log(`Chatbot: ${delta}`);
       }
     }
   }
@@ -83,6 +83,7 @@ console.log('------');
 
 async function handler(req, res){
   const { prompt } = req.body; // I finish this tomorrow morning
+  console.log(req.body);
   try {
     // Replace with your Azure OpenAI key
     const client = new OpenAIClient(endpoint, new AzureKeyCredential(key));
@@ -97,13 +98,13 @@ async function handler(req, res){
 
 
     let promptIndex = 0;
-    const { choices } = await client.getCompletions(deploymentId, examplePrompts);
-    console.log(choices);
-    for (const choice of choices) {
-      const completion = choice.text;
-      console.log(`Input: ${examplePrompts[promptIndex++]}`);
-      console.log(`Chatbot: ${completion}`);
-    }
+    const { choices } = await client.getCompletions(deploymentId, prompt);
+    // console.log(choices);
+    // for (const choice of choices) {
+      // const completion = choice.text;
+      // console.log(`Input: ${examplePrompts[promptIndex++]}`);
+      // console.log(`Chatbot: ${completion}`);
+    // }
     res.json(choices.map(choice => choice.text));
   } catch (e) {
     res.status(400).json({
@@ -113,7 +114,6 @@ async function handler(req, res){
   
 }
 
-main().catch(err => console.error(err))
 
 // const credential = new AzureKeyCredential(process.env.OPENAI_API_KEY);
 
@@ -183,5 +183,5 @@ app.post('/ask', handler);
 const port = process.env.PORT;
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });

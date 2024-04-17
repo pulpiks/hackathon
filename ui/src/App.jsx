@@ -10,7 +10,7 @@ import {
   TypingIndicator,
 } from '@chatscope/chat-ui-kit-react';
 
-const API_KEY = '07f87e80f99d429c9b0e38d7c24a0b0a'
+const API_ENDPOINT = 'http://localhost:3000/ask'
 
 const App = () => {
   const [messages, setMessages] = useState([
@@ -55,21 +55,22 @@ const App = () => {
       return { role, content: messageObject.message };
     });
 
-    const apiRequestBody = {
-      "model": "gpt-3.5-turbo",
-      "messages": [
-        { role: "system", content: "I'm a Student using ChatGPT for learning" },
-        ...apiMessages,
-      ],
-    };
+    // const apiRequestBody = {
+    //   "model": "gpt-3.5-turbo",
+    //   "messages": [
+    //     { role: "system", content: "I'm a Student using ChatGPT for learning" },
+    //     ...apiMessages,
+    //   ],
+    // };
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + API_KEY,
-        "Content-Type": "application/json",
+    const response = await fetch(API_ENDPOINT, {
+      body: {
+        prompt: ['nederland'],
       },
-      body: JSON.stringify(apiRequestBody),
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
     });
 
     return response.json();
