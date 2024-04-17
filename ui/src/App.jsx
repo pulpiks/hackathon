@@ -62,12 +62,10 @@ const App = () => {
       return { role, content: messageObject.message };
     });
 
-    console.log(chatMessages[chatMessages.length-1].message);
-
     const response = await fetch(API_ENDPOINT, {
       method: "POST",
       body: JSON.stringify({
-        prompt: chatMessages[chatMessages.length-1].message,
+        prompt: apiMessages.map(message => message.content),
       }),
       headers: {
         "Content-Type": "application/json",

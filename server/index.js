@@ -72,11 +72,12 @@ async function streamMain() {
       new AzureKeyCredential(process.env.OPENAI_API_KEY));
   
   const events = await client.streamChatCompletions(deploymentId, messages);
+  console.log(JSON.stringify(events));
   for await (const event of events) {
     for (const choice of event.choices) {
       const delta = choice.delta?.content;
       if (delta !== undefined) {
-        // console.log(`Chatbot: ${delta}`);
+        console.log(`Chatbot: ${delta}`);
       }
     }
   }
