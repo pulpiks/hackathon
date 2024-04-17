@@ -1,5 +1,5 @@
 # Hackathon 
-**run frontend: **
+## run frontend:
 ```
 
 cd ui
@@ -7,7 +7,7 @@ npm i
 npm run dev
 ```
 
-**run backend: **
+## run backend:
 ```
 
 npm i 
