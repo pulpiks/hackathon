@@ -64,16 +64,21 @@ const App = () => {
     // };
 
     const response = await fetch(API_ENDPOINT, {
-      body: {
-        prompt: ['nederland'],
-      },
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      // mode: "cors", // no-cors, *cors, same-origin
+      // mode: 'no-cors',
+      body: JSON.stringify({
+        prompt: ['hallo', 'Nederland'],
+      }),
       headers: {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
 
-    return response.json();
+    console.log(response);
+    const reseived = await response.json();
+    return reseived;
   }
 
   return (

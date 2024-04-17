@@ -1,8 +1,13 @@
 // const fs = require('fs');
 import express from 'express';
-import bodyParser from 'body-parser';
+import cors from 'cors';
 import 'dotenv/config'
 // const OpenAI = require('openai');
+
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
 
 const MODEL = {
     GPT_3_5: 'gpt-35-turbo',
@@ -49,11 +54,11 @@ const deploymentId = "gpt-35-turbo";
 
 const app = express();
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}));
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(cors("*"))
 
 import { OpenAIClient } from "@azure/openai";
 import { AzureKeyCredential } from "@azure/core-auth";
@@ -79,12 +84,10 @@ async function streamMain() {
 
 streamMain().catch(err => console.error('err', err))
 
-console.log('------');
-
 async function handler(req, res){
-  const { prompt } = req.body; // I finish this tomorrow morning
   console.log(req.body);
   try {
+    const { prompt } = req.body; // I finish this tomorrow morning
     // Replace with your Azure OpenAI key
     const client = new OpenAIClient(endpoint, new AzureKeyCredential(key));
 
@@ -105,7 +108,7 @@ async function handler(req, res){
       // console.log(`Input: ${examplePrompts[promptIndex++]}`);
       // console.log(`Chatbot: ${completion}`);
     // }
-    res.json(choices.map(choice => choice.text));
+    res.status(200).json({ data: choices.map(choice => choice.text)});
   } catch (e) {
     res.status(400).json({
       message: e
