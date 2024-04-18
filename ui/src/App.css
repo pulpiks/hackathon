@@ -1,8 +1,5 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
 }
 
 .logo {
@@ -47,4 +44,81 @@
 
 .message_assistant,
 .message_system{
+}
+
+/* Container */
+.cs-main-container {
+  background-color: #fff;
+  border: 1px solid #e6dfda !important;
+  border-radius: 5px;
+  margin-bottom: 30px;
+  padding: 15px 15px 0;
+}
+
+section.cs-message {
+  padding: 5px !important;
+}
+
+.cs-message__content {
+  box-shadow: 0 2px 5px 0 rgba(65,65,65,0.23);
+}
+
+section[aria-label="system: just now"] .cs-message__content,
+section[aria-label="assistant"] .cs-message__content{
+  background-color: white !important;
+}
+
+section[aria-label="user"] .cs-message__content {
+  background-color: #EA650D !important;
+}
+
+.cs-message-input__content-editor-wrapper {
+  display: flex ;
+  align-items: center ;
+  flex-wrap: wrap ;
+  border-radius: 4px !important;
+  box-shadow: 0 0 0 1px #949494;
+  margin: 16px 8px 24px 8px;
+  max-height: 68px;
+  min-height: 48px;
+  padding: 12px 56px 12px 16px;
+}
+
+.cs-message--outgoing .cs-message__content {
+  border-radius: 4px !important;
+}
+
+.cs-message-input__content-editor-container {
+  position: inherit !important;
+  height: auto !important;
+  width: 100%;
+}
+
+.cs-message-input__content-editor-wrapper, .cs-message-input__content-editor {
+  background: white !important;
+}
+
+.cs-message-input {
+  border-top: none !important;
+}
+
+.cs-chat-container {
+  padding-bottom: 1rem !important;
+}
+
+.cs-button--attachment, .cs-button--send {
+  color: #EA650D !important;
+  margin: auto !important;
+}
+
+.message_user {
+  margin-left: 0 !important;
+}
+
+.cs-typing-indicator__dot {
+  background-color: black !important;
+}
+
+.cs-typing-indicator__text {
+  color: black !important;
 }
