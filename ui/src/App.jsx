@@ -31,13 +31,7 @@ const MESSAGE_TYPE = {
 };
 
 const App = () => {
-  const [messages, setMessages] = useState([
-    {
-      message: "Hello, I'm ChatGPT! Ask me anything!",
-      sentTime: "just now",
-      sender: MESSAGE_TYPE.SYSTEM,
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [file, setFile] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
 
@@ -145,6 +139,43 @@ const App = () => {
                 ) : null
               }
             >
+              <section
+                aria-label="system: just now"
+                className="cs-message cs-message--outgoing message_system"
+                data-cs-message=""
+              >
+                <div className="cs-message__content-wrapper">
+                  <div className="cs-message__content">
+                    <div className="cs-message__html-content">
+                      Please select the policy that you would like to use:
+                      <div>
+                        <div
+                          style={{
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <button
+                            onClick={() => {
+                              handleSendRequest("1234");
+                            }}
+                          >
+                            Hiaat 1234
+                          </button>
+                        </div>
+                        <div>
+                          <button
+                            onClick={() => {
+                              handleSendRequest("123");
+                            }}
+                          >
+                            Verzuim 123
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
               {messages.map((message, i) => {
                 return (
                   <Message
